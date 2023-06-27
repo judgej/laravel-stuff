@@ -1,4 +1,6 @@
 
+![alt text](https://raw.githubusercontent.com/judgej/laravel-stuff/main/one-to-many.mermaid)
+
 ```mermaid
 erDiagram
           CUSTOMER }|..|{ DELIVERY-ADDRESS : has
