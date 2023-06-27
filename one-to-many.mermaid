@@ -1,2 +1,5 @@
 erDiagram
-          PARENT ||--o{ CHILD : "hasOne() hasMany()"
+    PARENT ||--o{ CHILD : "hasOne() hasMany()"
+    CHILD {
+        int parent_id
+    }
