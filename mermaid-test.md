@@ -1,5 +1,5 @@
 
-![alt text](https://raw.githubusercontent.com/judgej/laravel-stuff/main/one-to-many.mermaid)
+![alt text](https://raw.githubusercontent.com/judgej/laravel-stuff/main/one-to-many.mermaid?raw=true)
 
 ```mermaid
 erDiagram
