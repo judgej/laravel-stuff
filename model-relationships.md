@@ -1,19 +1,19 @@
 <!-- TOC -->
 
 - [One-to-one](#one-to-one)
-    - [Forward Relationship](#forward-relationship)
-        - [ER Diagram](#er-diagram)
-        - [Relationship Method](#relationship-method)
-    - [Inverse Relationship](#inverse-relationship)
-        - [ER Diagram](#er-diagram-1)
-        - [Relationship Method](#relationship-method-1)
+    - [Forward Relationship (one-to-one)](#forward-relationship-one-to-one)
+        - [ER Diagram (one-to-one forward)](#er-diagram-one-to-one-forward)
+        - [Relationship Method (one-to-one forward)](#relationship-method-one-to-one-forward)
+    - [Inverse Relationship (one-to-one)](#inverse-relationship-one-to-one)
+        - [ER Diagram (one-to-one inverse)](#er-diagram-one-to-one-inverse)
+        - [Relationship Method (one-to-one inverse)](#relationship-method-one-to-one-inverse)
 - [One-to-many](#one-to-many)
-    - [Forward Relationship](#forward-relationship-1)
-        - [ER Diagram](#er-diagram-2)
-        - [Relationship Method](#relationship-method-2)
-    - [Inverse Relationship](#inverse-relationship-1)
-        - [ER Diagram](#er-diagram-3)
-        - [Relationship Method](#relationship-method-3)
+    - [Forward Relationship (one-to-many)](#forward-relationship-one-to-many)
+        - [ER Diagram (one-to-many forward)](#er-diagram-one-to-many-forward)
+        - [Relationship Method (one-to-many forward)](#relationship-method-one-to-many-forward)
+    - [Inverse Relationship (one-to-many)](#inverse-relationship-one-to-many)
+        - [ER Diagram (one-to-many inverse)](#er-diagram-one-to-many-inverse)
+        - [Relationship Method (one-to-many inverse)](#relationship-method-one-to-many-inverse)
         - [Variations](#variations)
 
 <!-- /TOC -->
@@ -36,9 +36,9 @@
   side of the relationship can exist without a matching instance on
   the other side.
 
-## Forward Relationship
+## Forward Relationship (one-to-one)
 
-### ER Diagram
+### ER Diagram (one-to-one forward)
 
 ```mermaid
 erDiagram
@@ -51,7 +51,7 @@ erDiagram
     }
 ```
 
-### Relationship Method
+### Relationship Method (one-to-one forward)
 
 ```php
 <?php
@@ -59,7 +59,7 @@ erDiagram
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/** @property Child $child */
+/** @property Child|null $child */
 class Parent extends Model
 {
     public function child(): HasOne
@@ -69,9 +69,9 @@ class Parent extends Model
 }
 ```
 
-## Inverse Relationship
+## Inverse Relationship (one-to-one)
 
-### ER Diagram
+### ER Diagram (one-to-one inverse)
 
 ```mermaid
 erDiagram
@@ -83,20 +83,23 @@ erDiagram
         mixed parent_id FK,UK
     }
 ```
-### Relationship Method
+### Relationship Method (one-to-one inverse)
 
 ```php
 <?php
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/** @property Collection<Child> $children */
-class Parent extends Model
+/** @property Parent $parent if the forign key is not null */
+/** @property Parent|null $parent if the forign key is nullable */
+class Child extends Model
 {
-    public function children(): HasMany
+    public function parent(): BelongsTo
     {
-        return $this->hasMany(Child::class);
+        // Omit the second parameter if this method name matches
+        // the database foreign key column.
+
+        return $this->belongsTo(Parent::classm, 'parent_id');
     }
 }
 ```
@@ -112,9 +115,9 @@ class Parent extends Model
   the primary key uses.
   The foreign keys would be named appropriately in this case, for example `parent_uuid`.
 
-## Forward Relationship
+## Forward Relationship (one-to-many)
 
-### ER Diagram
+### ER Diagram (one-to-many forward)
 
 ```mermaid
 erDiagram
@@ -127,30 +130,27 @@ erDiagram
     }
 ```
 
-### Relationship Method
+### Relationship Method (one-to-many forward)
 
 ```php
 <?php
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/** @property Parent $parent */
-class Child extends Model
+/** @property Collection<Child> $child */
+class Parent extends Model
 {
-    public function parent(): BelongsTo
+    public function children(): HasMany
     {
-        // The second parameter can be omitted if the first part
-        // is the same as this method name, as it is here.
-
-        return $this->belongsTo(Parent::class, 'parent_id');
+        return $this->hasMany(Child::class);
     }
 }
 ```
 
-## Inverse Relationship
+## Inverse Relationship (one-to-many)
 
-### ER Diagram
+### ER Diagram (one-to-many inverse)
 
 ```mermaid
 erDiagram
@@ -163,7 +163,7 @@ erDiagram
     }
 ```
 
-### Relationship Method
+### Relationship Method (one-to-many inverse)
 
 ```php
 <?php
