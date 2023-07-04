@@ -62,7 +62,6 @@ erDiagram
 ```php
 <?php
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /** @property Parent $parent */
