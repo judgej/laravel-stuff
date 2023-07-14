@@ -38,7 +38,13 @@ class Top extends Model
         return $this->hasOneThrough(Bottom::class, Middle::class);
     }
 
-    // Optional
+    // Alternative, with optional hasOne() methods present
+    public function bottom(): HasOneThrough
+    {
+        return $this->through('middle')->has('bottom');
+    }
+
+// Optional
     public function middle(): HasOne
     {
         return $this->hasOne(Middle::class);

@@ -1,17 +1,17 @@
 # One-to-one
 
 * This relationship is not as symetrical as it sounds,
-  as there is still a parent and a child entity.
-  The parent instance must exist before a child can be linked to it.
+  as there is still a primary and a secondary entity.
+  The primary instance must exist before a secondary can be linked to it.
 * The database implements a one-to-mamy relationship for a one-to-one
   model relationship.
   Care must be taken with the data integrity to ensure the one-to-one
-  relatioship holds.
-  A unique index can ensure no parent instance has more than one child.
+  relationship holds.
+  A unique index can ensure no primary instance has more than one secondary.
   *I'm not sure the need to create a unique key is actually documented.*
-* The relationship can be set up so that a child can only exist with
-  a parent (a `not null` foreign key), or it can be set up so
-  a child can exist without a parent (a `nullable` foreign key).
+* The relationship can be set up so that a secondary can only exist with
+  a primary (a `not null` foreign key), or it can be set up so
+  a secondary can exist without a primary (a `nullable` foreign key).
   This second option is more symetrical, since an instance on either
   side of the relationship can exist without a matching instance on
   the other side.
@@ -22,12 +22,12 @@
 
 ```mermaid
 erDiagram
-    Parent ||--o| Child : "hasOne()"
-    Parent {
+    Primary ||--o| Secondary : "hasOne()"
+    Primary {
         mixed id PK
     }
-    Child {
-        mixed parent_id FK,UK
+    Secondary {
+        mixed primary_id FK,UK
     }
 ```
 
@@ -39,12 +39,12 @@ erDiagram
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/** @property Child|null $child */
-class Parent extends Model
+/** @property Secondary|null $secondary */
+class Primary extends Model
 {
-    public function child(): HasOne
+    public function secondary(): HasOne
     {
-        return $this->hasOne(Child::class);
+        return $this->hasOne(Secondary::class);
     }
 }
 ```
@@ -55,12 +55,12 @@ class Parent extends Model
 
 ```mermaid
 erDiagram
-    Child o|--|| Parent : "belongsTo()"
-    Parent {
+    Secondary o|--|| Primary : "belongsTo()"
+    Primary {
         mixed id PK
     }
-    Child {
-        mixed parent_id FK,UK
+    Secondary {
+        mixed primary_id FK,UK
     }
 ```
 ### Inverse Relationship Method
@@ -70,16 +70,16 @@ erDiagram
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/** @property Parent $parent if the forign key is not null */
-/** @property Parent|null $parent if the forign key is nullable */
-class Child extends Model
+/** @property Primary $primary if the forign key is not null */
+/** @property Primary|null $primary if the forign key is nullable */
+class Secondary extends Model
 {
-    public function parent(): BelongsTo
+    public function primary(): BelongsTo
     {
         // Omit the second parameter if this method name matches
         // the database foreign key column.
 
-        return $this->belongsTo(Parent::classm, 'parent_id');
+        return $this->belongsTo(Primary::class, 'primary_id');
     }
 }
 ```
